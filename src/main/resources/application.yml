@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: nd6tom7
+    type: org.postgresql.jdbc2.optional.PoolingDataSource
+  batch:
+    jdbc:
+      initialize-schema: always
+      platform: postgresql
+    job:
+      enabled: false
+
+app:
+  processing-delay: 6s
+
+logging:
+  level:
+    org.springframework.batch: warn
+    ru.ins137.ru: info
