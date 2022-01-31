@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
-    password: nd6tom7
+    password: postgres
     type: org.postgresql.jdbc2.optional.PoolingDataSource
   batch:
     jdbc:
@@ -13,7 +13,8 @@ spring:
       enabled: false
 
 app:
-  processing-delay: 6s
+  processing-delay: 2s
+  job-cron: '*/1 * * * * *'
 
 logging:
   level:

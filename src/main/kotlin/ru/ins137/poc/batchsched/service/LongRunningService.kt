@@ -11,8 +11,7 @@ class LongRunningService(
 
     private val counter = AtomicLong(0L)
 
-    fun process(): Long {
-        Thread.sleep(appProps.processingDelay.toMillis())
-        return counter.incrementAndGet()
-    }
+    fun startProcess(): Long = counter.incrementAndGet()
+
+    fun endProcess(): Long = counter.decrementAndGet()
 }

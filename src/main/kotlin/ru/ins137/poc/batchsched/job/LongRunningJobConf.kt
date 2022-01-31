@@ -1,5 +1,6 @@
 package ru.ins137.poc.batchsched.job
 
+import org.slf4j.LoggerFactory
 import org.springframework.batch.core.*
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory
@@ -10,7 +11,9 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.temporal.ChronoUnit
 
 @Configuration
@@ -23,6 +26,7 @@ class LongRunningJobConf(
     @Bean
     fun longRunningTaskletStep(): Step = stepBuilderFactory["long-running-tasklet-step"]
         .tasklet(tasklet)
+        .allowStartIfComplete(true)
         .build()
 
     @Bean
@@ -37,20 +41,32 @@ class LongRunningJobConf(
         private val longRunningJob: Job
     ) {
 
-        private val key get() = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
+        private val key get() = dayConstant()
 
-        @Scheduled(cron = "*/5 * * * * *")
+        private fun dayConstant(): String = LocalDate.now().toString()
+
+        private fun truncatedToSeconds(): String = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).toString()
+
+        private fun truncatedToTenSecond(): String = (Math.floor(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toDouble() / 10) * 10).toLong().toString()
+
+        @Scheduled(cron = "\${app.job-cron}")
         @Async("longRunningJobThreadPool")
         fun schedule() {
-            jobLauncher.run(
-                longRunningJob, JobParameters(
-                    mapOf(
-                        "id" to JobParameter(key, true)
+            kotlin.runCatching {
+                jobLauncher.run(
+                    longRunningJob, JobParameters(
+                        mapOf(
+                            "id" to JobParameter(key, true)
+                        )
                     )
                 )
-            )
+            }.getOrElse { logger.error(it.javaClass.simpleName + ": " + it.message) }
         }
 
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(LongRunningJobConf::class.java)
     }
 }
 
