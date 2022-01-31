@@ -7,5 +7,6 @@ import java.time.Duration
 @ConstructorBinding
 @ConfigurationProperties("app")
 class AppProps(
+    val jobCron: String,
     val processingDelay: Duration
 )

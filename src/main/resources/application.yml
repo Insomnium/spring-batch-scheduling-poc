@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/quartz
     username: postgres
     password: postgres
     type: org.postgresql.jdbc2.optional.PoolingDataSource
@@ -11,12 +11,27 @@ spring:
       platform: postgresql
     job:
       enabled: false
+  quartz:
+    job-store-type: jdbc
+    overwrite-existing-jobs: true
+#    auto-startup: false # FIXME: ???
+    jdbc:
+      initialize-schema: always
+      schema: classpath:quartz/tables_postgres.sql
+    properties:
+      org.quartz.jobStore.isClustered: true
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
+#      org.quartz.jobStore.acquireTriggersWithinLock: true
+      org.quartz.scheduler.instanceName: LongRunningScheduler
+      org.quartz.threadPool.threadCount: 3
+    auto-startup: true
 
 app:
   processing-delay: 2s
-  job-cron: '*/1 * * * * *'
+  job-cron: '*/1 * * * * ?'
 
 logging:
   level:
     org.springframework.batch: warn
     ru.ins137.ru: info
+    org.quartz.impl.jdbcjobstore: debug
