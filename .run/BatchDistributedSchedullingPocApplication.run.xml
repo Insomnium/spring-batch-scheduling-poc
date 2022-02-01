@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BatchDistributedSchedullingPocApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="batch-distributed-schedulling-poc" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="ru.ins137.poc.batchsched.BatchDistributedSchedullingPocApplication" />
+    <option name="PROGRAM_PARAMETERS" value="--app.lock.owner=localhost_I" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="SHORTEN_COMMAND_LINE" value="NONE" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
