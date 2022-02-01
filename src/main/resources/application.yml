@@ -14,11 +14,11 @@ spring:
   quartz:
     job-store-type: jdbc
     overwrite-existing-jobs: true
-#    auto-startup: false # FIXME: ???
     jdbc:
       initialize-schema: always
       schema: classpath:quartz/tables_postgres.sql
     properties:
+      org.quartz.scheduler.instanceId: ${app.lock.owner:AUTO}
       org.quartz.jobStore.isClustered: true
       org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate
 #      org.quartz.jobStore.acquireTriggersWithinLock: true
@@ -34,4 +34,4 @@ logging:
   level:
     org.springframework.batch: warn
     ru.ins137.ru: info
-    org.quartz.impl.jdbcjobstore: debug
+#    org.quartz.impl.jdbcjobstore: debug
