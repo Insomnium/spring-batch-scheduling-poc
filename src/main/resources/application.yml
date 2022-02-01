@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/postgres
+    url: jdbc:postgresql://localhost:5432/quartz
     username: postgres
     password: postgres
     type: org.postgresql.jdbc2.optional.PoolingDataSource
@@ -11,10 +11,16 @@ spring:
       platform: postgresql
     job:
       enabled: false
+  liquibase:
+    change-log: classpath*:db/changelog/changelog-master.xml
 
 app:
-  processing-delay: 2s
+  processing-delay: 3s
   job-cron: '*/1 * * * * *'
+  lock:
+    owner: localhost # has to be unique for every active instance, as lock is reentrant
+    least: 2s
+    most: 10s
 
 logging:
   level:

@@ -7,5 +7,11 @@ import java.time.Duration
 @ConstructorBinding
 @ConfigurationProperties("app")
 class AppProps(
-    val processingDelay: Duration
+    val processingDelay: Duration,
+    val lock: Lock
+)
+
+@ConstructorBinding
+data class Lock(
+    val owner: String
 )

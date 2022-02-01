@@ -1,5 +1,6 @@
 package ru.ins137.poc.batchsched.job
 
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.slf4j.LoggerFactory
 import org.springframework.batch.core.*
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
@@ -41,7 +42,9 @@ class LongRunningJobConf(
         private val longRunningJob: Job
     ) {
 
-        private val key get() = dayConstant()
+        private val key get() = unique()
+
+        private fun unique(): String = LocalDateTime.now().toString()
 
         private fun dayConstant(): String = LocalDate.now().toString()
 
@@ -50,7 +53,8 @@ class LongRunningJobConf(
         private fun truncatedToTenSecond(): String = (Math.floor(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC).toDouble() / 10) * 10).toLong().toString()
 
         @Scheduled(cron = "\${app.job-cron}")
-        @Async("longRunningJobThreadPool")
+        @SchedulerLock(name = "longRunningJobLock", lockAtLeastFor = "\${app.lock.least}", lockAtMostFor = "\${app.lock.most}")
+        @Async("longRunningJobThreadPool") // has to be single threaded pool, as lock is reentrant
         fun schedule() {
             kotlin.runCatching {
                 jobLauncher.run(
