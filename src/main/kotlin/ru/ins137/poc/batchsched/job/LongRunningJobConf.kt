@@ -60,7 +60,7 @@ class LongRunningJobConf(
             .build()
 
         @DisallowConcurrentExecution
-        @PersistJobDataAfterExecution // DOES NOT SOLVE TRIGGER OVERLAP ISSUE
+        @PersistJobDataAfterExecution
         class LongRunningQuartzJob(
             private val jobLauncher: JobLauncher,
             private val longRunningJob: Job
